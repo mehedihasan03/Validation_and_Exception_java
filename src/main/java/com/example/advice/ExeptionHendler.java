@@ -1,5 +1,6 @@
 package com.example.advice;
 
+import com.example.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,6 +20,16 @@ public class ExeptionHendler {
         ex.getBindingResult().getFieldErrors().forEach(error->{
             errorMap.put(error.getField(), error.getDefaultMessage());
         });
+        return errorMap;
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(UserNotFoundException.class)
+    public Map<String, String> handleBusinessExecution(UserNotFoundException exception){
+        Map<String, String> errorMap = new HashMap<>();
+
+        errorMap.put("errorMessage", exception.getMessage());
+
         return errorMap;
     }
 }
